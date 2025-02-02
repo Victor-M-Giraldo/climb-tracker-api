@@ -8,10 +8,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const hashedPassword = bcryptjs.hashSync(password, 10);
 
-  const existingUser = await PrismaClient.user.findUnique({
+  const existingUser = await PrismaClient.user.findFirst({
     where: {
-      email: email,
-      mode: "insensitive",
+      email: {
+        equals: email,
+        mode: "insensitive",
+      },
     },
   });
 
