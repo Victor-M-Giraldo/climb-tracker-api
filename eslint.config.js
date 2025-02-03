@@ -15,7 +15,14 @@ export default [
       ],
     },
   },
-  { languageOptions: { globals: globals.node } },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.vitest,
+      },
+    },
+  },
   eslintConfigPrettier,
   pluginJs.configs.recommended,
 ];
