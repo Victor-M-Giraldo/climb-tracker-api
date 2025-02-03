@@ -15,6 +15,8 @@ const registrationValidations = [
     .isString()
     .trim()
     .notEmpty()
+    .withMessage('Email is required')
+    .bail()
     .isEmail()
     .withMessage('Email must be a valid email address'),
   body('password')
@@ -36,8 +38,19 @@ const registrationValidations = [
 ];
 
 const loginValidations = [
-  body('email').isString().trim().notEmpty().isEmail(),
-  body('password').isString().trim().notEmpty(),
+  body('email')
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Email is required')
+    .bail()
+    .isEmail()
+    .withMessage('Email must be a valid email address'),
+  body('password')
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Password is required'),
 ];
 
 function validateRequest(req, res, next) {
