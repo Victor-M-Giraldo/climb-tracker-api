@@ -1,6 +1,7 @@
 import PrismaClient from '../database/PrismaClient.js';
 import bcryptjs from 'bcryptjs';
 import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
 import { ApiException } from '../errors/ApiErrors.js';
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -43,4 +44,44 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 });
 
-export { registerUser };
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await PrismaClient.user.findFirst({
+    where: {
+      email: {
+        equals: email,
+        mode: 'insensitive',
+      },
+    },
+  });
+
+  const match = await bcryptjs.compare(password, user.password);
+
+  if (!user || !match) {
+    throw new ApiException('Invalid email or password', 401);
+  }
+
+  if (match) {
+    const payload = {
+      sub: user.id,
+      iat: Math.floor(Date.now() / 1000),
+    };
+
+    const expiresIn = '7d';
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn,
+    });
+
+    res.json({
+      message: 'User logged in successfully',
+      data: {
+        token: `Bearer ${token}`,
+        expiresIn,
+      },
+    });
+  }
+});
+
+export { registerUser, loginUser };
