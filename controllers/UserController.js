@@ -56,32 +56,37 @@ const loginUser = asyncHandler(async (req, res) => {
     },
   });
 
-  const match = await bcryptjs.compare(password, user.password);
-
-  if (!user || !match) {
+  if (!user) {
     throw new ApiException('Invalid email or password', 401);
   }
 
-  if (match) {
-    const payload = {
-      sub: user.id,
-      iat: Math.floor(Date.now() / 1000),
-    };
+  const match = await bcryptjs.compare(password, user.password);
 
-    const expiresIn = '7d';
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn,
-    });
-
-    res.json({
-      message: 'User logged in successfully',
-      data: {
-        token: `Bearer ${token}`,
-        expiresIn,
-      },
-    });
+  if (!match) {
+    throw new ApiException('Invalid email or password', 401);
   }
+
+  const payload = {
+    sub: user.id,
+    iat: Math.floor(Date.now() / 1000),
+  };
+
+  const { password: _, ...existingUser } = user;
+
+  const expiresIn = '7d';
+
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn,
+  });
+
+  res.json({
+    message: 'User logged in successfully',
+    data: {
+      token: `Bearer ${token}`,
+      expiresIn,
+      user: existingUser,
+    },
+  });
 });
 
 export { registerUser, loginUser };

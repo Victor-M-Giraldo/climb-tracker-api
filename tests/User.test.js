@@ -1,6 +1,7 @@
 import PrismaClient from '../database/PrismaClient.js';
 import express from 'express';
 import request from 'supertest';
+import bcryptjs from 'bcryptjs';
 import UserRouter from '../routes/UserRouter.js';
 import ErrorHandler from '../middleware/errorhandler.js';
 
@@ -9,7 +10,7 @@ app.use(express.json());
 app.use('/users', UserRouter);
 app.use(ErrorHandler);
 
-describe('User Route', () => {
+describe('User Registration', () => {
   test('POST /users/register', async () => {
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
     PrismaClient.user.create = vi.fn().mockResolvedValue({
@@ -183,5 +184,96 @@ describe('User Route', () => {
       password: 'Passwordss%s',
     });
     expect(response.statusCode).toBe(400);
+  });
+});
+
+describe('User Login', () => {
+  test('POST /users/login', async () => {
+    bcryptjs.compare = vi.fn().mockResolvedValue(true);
+    PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
+      id: 1,
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testuser@gmail.com',
+      password: 'Passwordss%1',
+    });
+
+    const response = await request(app).post('/users/login').send({
+      email: 'testuser@gmail.com',
+      password: 'Passwordss%1',
+    });
+
+    expect(response.statusCode).toBe(200);
+
+    expect(response.body).toEqual({
+      message: 'User logged in successfully',
+      data: {
+        expiresIn: '7d',
+        token: expect.any(String),
+        user: {
+          id: 1,
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'testuser@gmail.com',
+        },
+      },
+    });
+  });
+
+  test('POST /users/login with invalid email', async () => {
+    const response = await request(app).post('/users/login').send({
+      email: 'abcdefgh',
+      password: 'Passwordss%1',
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  test('POST /users/login with no email', async () => {
+    const response = await request(app).post('/users/login').send({
+      email: '',
+      password: 'Passwordss%1',
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  test('POST /users/login with no password', async () => {
+    const response = await request(app).post('/users/login').send({
+      email: 'testuser@gmail.com',
+      password: '',
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  test('POST /users/login with email that does not match', async () => {
+    PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
+
+    const response = await request(app).post('/users/login').send({
+      email: 'testuser@gmail.com',
+      password: 'Passwordss%1',
+    });
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  test('POST /users/login with password that does not match', async () => {
+    PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
+      id: 1,
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testuser@gmail.com',
+      password: 'password',
+    });
+
+    bcryptjs.compare = vi.fn().mockResolvedValue(false);
+
+    const response = await request(app).post('/users/login').send({
+      email: 'testuser@gmail.com',
+      password: 'Passwordsx%1',
+    });
+
+    expect(response.statusCode).toBe(401);
   });
 });
