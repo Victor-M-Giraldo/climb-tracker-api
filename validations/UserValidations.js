@@ -1,27 +1,27 @@
-import { body, validationResult } from "express-validator";
+import { body, validationResult } from 'express-validator';
 
 const registrationValidations = [
-  body("firstName")
+  body('firstName')
     .isString()
     .trim()
     .isLength({ min: 2, max: 50 })
-    .withMessage("First name must be between 2 and 50 characters"),
-  body("lastName")
+    .withMessage('First name must be between 2 and 50 characters'),
+  body('lastName')
     .isString()
     .trim()
     .isLength({ min: 2, max: 50 })
-    .withMessage("Last name must be between 2 and 50 characters"),
-  body("email")
+    .withMessage('Last name must be between 2 and 50 characters'),
+  body('email')
     .isString()
     .trim()
     .notEmpty()
     .isEmail()
-    .withMessage("Email must be a valid email address"),
-  body("password")
+    .withMessage('Email must be a valid email address'),
+  body('password')
     .isString()
     .trim()
     .isLength({ min: 12, max: 64 })
-    .withMessage("Password must be between 12 and 64 characters")
+    .withMessage('Password must be between 12 and 64 characters')
     .bail()
     .isStrongPassword({
       minLength: 12,
@@ -31,13 +31,13 @@ const registrationValidations = [
       minSymbols: 1,
     })
     .withMessage(
-      "Password must be at least 12 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol",
+      'Password must be at least 12 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol'
     ),
 ];
 
 const loginValidations = [
-  body("email").isString().trim().notEmpty().isEmail(),
-  body("password").isString().trim().notEmpty(),
+  body('email').isString().trim().notEmpty().isEmail(),
+  body('password').isString().trim().notEmpty(),
 ];
 
 function validateRequest(req, res, next) {
