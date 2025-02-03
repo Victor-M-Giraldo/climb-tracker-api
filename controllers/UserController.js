@@ -1,7 +1,7 @@
-import PrismaClient from "../database/PrismaClient.js";
-import bcryptjs from "bcryptjs";
-import asyncHandler from "express-async-handler";
-import { ApiException } from "../errors/ApiErrors.js";
+import PrismaClient from '../database/PrismaClient.js';
+import bcryptjs from 'bcryptjs';
+import asyncHandler from 'express-async-handler';
+import { ApiException } from '../errors/ApiErrors.js';
 
 const registerUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -12,13 +12,13 @@ const registerUser = asyncHandler(async (req, res) => {
     where: {
       email: {
         equals: email,
-        mode: "insensitive",
+        mode: 'insensitive',
       },
     },
   });
 
   if (existingUser) {
-    throw new ApiException("User with that email already exists", 409);
+    throw new ApiException('User with that email already exists', 409);
   }
 
   const newUser = await PrismaClient.user.create({
@@ -34,9 +34,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
   res
     .status(201)
-    .header("Location", `/users/${newUser.id}`)
+    .header('Location', `/users/${newUser.id}`)
     .json({
-      message: "User created successfully",
+      message: 'User created successfully',
       data: {
         user: userResponse,
       },
