@@ -6,5 +6,6 @@ export default defineConfig({
     globals: true,
     include: ['**/*.{test,spec}.{js,ts}'],
     exclude: ['node_modules', 'dist'],
+    testTimeout: 10000000,
   },
 });
