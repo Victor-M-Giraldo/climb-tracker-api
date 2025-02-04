@@ -19,7 +19,7 @@ const createClimb = asyncHandler(async (req, res) => {
     data: {
       grade: grade,
       location: location,
-      completed: Boolean(completed),
+      completed: completed,
       user: {
         connect: {
           id: userId,
