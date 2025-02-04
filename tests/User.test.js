@@ -11,6 +11,9 @@ app.use('/users', UserRouter);
 app.use(ErrorHandler);
 
 describe('User Registration', () => {
+  afterEach(() => {
+    vi.resetAllMocks();
+  })
   test('POST /users/register', async () => {
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
     PrismaClient.user.create = vi.fn().mockResolvedValue({
@@ -188,6 +191,9 @@ describe('User Registration', () => {
 });
 
 describe('User Login', () => {
+    afterEach(() => {
+      vi.resetAllMocks();
+    });
   test('POST /users/login', async () => {
     bcryptjs.compare = vi.fn().mockResolvedValue(true);
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
@@ -266,8 +272,6 @@ describe('User Login', () => {
       email: 'testuser@gmail.com',
       password: 'password',
     });
-
-    bcryptjs.compare = vi.fn().mockResolvedValue(false);
 
     const response = await request(app).post('/users/login').send({
       email: 'testuser@gmail.com',
