@@ -2,6 +2,32 @@ import asyncHandler from 'express-async-handler';
 import PrismaClient from '../database/PrismaClient.js';
 import { ApiException } from '../errors/ApiErrors.js';
 
+const getClimbsForUser = asyncHandler(async (req, res) => {
+    let { userId } = req.params;
+
+    userId = parseInt(userId);
+
+    if (req.user.id !== userId) {
+        res.status(403);
+        throw new ApiException(
+            'You are not authorized to view climbs for this user',
+            403
+        );
+    }
+
+    const climbs = await PrismaClient.climb.findMany({
+        where: {
+            userId: userId,
+        },
+    });
+
+    res.json({
+        data: {
+            climbs,
+        },
+    });
+});
+
 const createClimb = asyncHandler(async (req, res) => {
   const { grade, location, completed } = req.body;
   let { userId } = req.params;
@@ -36,4 +62,4 @@ const createClimb = asyncHandler(async (req, res) => {
   });
 });
 
-export { createClimb };
+export { createClimb, getClimbsForUser };
