@@ -2,9 +2,8 @@ import * as UserController from '../controllers/UserController.js';
 import {
   registrationValidations,
   loginValidations,
-  withValidation,
 } from '../validations/UserValidations.js';
-import { createClimbValidations } from '../validations/ClimbValidations.js';
+import { withValidation } from '../validations/validationUtils.js';
 import { Router } from 'express';
 import ClimbRouter from './ClimbRouter.js';
 import passport from '../config/auth/passport.js';
@@ -25,7 +24,6 @@ UserRouter.post(
 
 UserRouter.use(
   '/:userId/climbs',
-  withValidation(createClimbValidations),
   passport.authenticate('jwt', { session: false }),
   ClimbRouter
 );
