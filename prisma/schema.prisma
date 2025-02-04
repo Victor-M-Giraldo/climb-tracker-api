@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  createdAt  DateTime @default(now())
-  firstName  String
-  lastName   String
-  climbs     Climb[]
-  progress   Progress?
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  firstName String
+  lastName  String
+  climbs    Climb[]
+  progress  Progress?
+
+  @@map("users")
 }
 
 model Climb {
@@ -26,8 +28,10 @@ model Climb {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   notes     Note[]
+
+  @@map("climbs")
 }
 
 model Note {
@@ -36,15 +40,19 @@ model Note {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   climbId   Int
-  climb     Climb    @relation(fields: [climbId], references: [id])
+  climb     Climb    @relation(fields: [climbId], references: [id], onDelete: Cascade)
+
+  @@map("notes")
 }
 
 model Progress {
   id           Int      @id @default(autoincrement())
-  userId       Int @unique
+  userId       Int      @unique
   totalClimbs  Int
   hardestGrade String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  User         User     @relation(fields: [userId], references: [id])
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("progress")
 }
