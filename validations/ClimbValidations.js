@@ -42,4 +42,12 @@ const createClimbValidations = [
         .withMessage('User ID must be an integer'),
 ];
 
-export { createClimbValidations };
+
+const getClimbValidations = [
+    param('userId')
+        .isInt()
+        .toInt()
+        .withMessage('User ID must be an integer'),
+]
+
+export { createClimbValidations, getClimbValidations };
