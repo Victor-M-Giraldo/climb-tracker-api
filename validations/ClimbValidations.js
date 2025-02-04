@@ -16,6 +16,30 @@ const grades = [
   'V12',
 ];
 
+const updateClimbValidations = [
+  body('grade')
+    .optional()
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Grade is required')
+    .bail()
+    .isIn(grades)
+    .withMessage(`Invalid grade, must be one of: ${grades.join(', ')}`),
+  body('location')
+    .optional()
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Location is required'),
+  body('completed')
+    .optional()
+    .trim()
+    .isBoolean()
+    .withMessage('Completed must be a boolean')
+    .toBoolean(),
+]
+
 const createClimbValidations = [
   body('grade')
     .isString()
@@ -43,4 +67,4 @@ const getClimbValidations = [
   param('userId').isInt().toInt().withMessage('User ID must be an integer'),
 ];
 
-export { createClimbValidations, getClimbValidations };
+export { createClimbValidations, getClimbValidations, updateClimbValidations };

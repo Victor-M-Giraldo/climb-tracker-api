@@ -94,4 +94,45 @@ const getClimb = asyncHandler(async (req, res) => {
   });
 });
 
-export { createClimb, getClimbsForUser, getClimb };
+const updateClimb = asyncHandler(async (req, res) => {
+  let { userId, climbId } = req.params;
+  const { grade, location, completed } = req.body;
+
+  userId = parseInt(userId);
+  climbId = parseInt(climbId);
+
+  if (req.user.id !== userId) {
+    res.status(403);
+    throw new ApiException(
+      'You are not authorized to view climbs for this user',
+      403
+    );
+  }
+
+  const updateData = {};
+  if (grade) {
+    updateData.grade = grade;
+  }
+
+  if (location) {
+    updateData.location = location;
+  }
+
+  if (completed) {
+    updateData.completed = completed;
+  }
+
+  await PrismaClient.climb.update({
+    where: {
+      id: climbId,
+    },
+    data: {
+      ...updateData,
+    },
+  });
+
+  res.set('Content-Location', `/users/${userId}/climbs/${climbId}`);
+  return res.status(204);
+})
+
+export { createClimb, getClimbsForUser, getClimb, updateClimb };
