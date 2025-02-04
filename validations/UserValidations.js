@@ -1,4 +1,4 @@
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 
 const registrationValidations = [
   body('firstName')
@@ -53,16 +53,4 @@ const loginValidations = [
     .withMessage('Password is required'),
 ];
 
-function validateRequest(req, res, next) {
-  const errors = validationResult(req);
-  if (errors.isEmpty()) {
-    return next();
-  }
-  return res.status(400).json({ errors: errors.array() });
-}
-
-function withValidation(validations) {
-  return [...validations, validateRequest];
-}
-
-export { registrationValidations, loginValidations, withValidation };
+export { registrationValidations, loginValidations };
