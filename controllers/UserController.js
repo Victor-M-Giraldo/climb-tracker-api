@@ -1,7 +1,7 @@
 import PrismaClient from '../database/PrismaClient.js';
 import bcryptjs from 'bcryptjs';
 import asyncHandler from 'express-async-handler';
-import jwt from 'jsonwebtoken';
+import { issueJWT } from '../utils/authUtils.js';
 import { ApiException } from '../errors/ApiErrors.js';
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -66,18 +66,9 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiException('Invalid email or password', 401);
   }
 
-  const payload = {
-    sub: user.id,
-    iat: Math.floor(Date.now() / 1000),
-  };
-
   const { password: _, ...existingUser } = user;
 
-  const expiresIn = '7d';
-
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn,
-  });
+  const { token, expiresIn } = issueJWT(existingUser);
 
   res.json({
     message: 'User logged in successfully',

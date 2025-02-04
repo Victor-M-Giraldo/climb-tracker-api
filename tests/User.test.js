@@ -13,7 +13,7 @@ app.use(ErrorHandler);
 describe('User Registration', () => {
   afterEach(() => {
     vi.resetAllMocks();
-  })
+  });
   test('POST /users/register', async () => {
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
     PrismaClient.user.create = vi.fn().mockResolvedValue({
@@ -191,9 +191,9 @@ describe('User Registration', () => {
 });
 
 describe('User Login', () => {
-    afterEach(() => {
-      vi.resetAllMocks();
-    });
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
   test('POST /users/login', async () => {
     bcryptjs.compare = vi.fn().mockResolvedValue(true);
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue({

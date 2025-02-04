@@ -54,7 +54,7 @@ async function main() {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     let email = faker.internet.email({ firstName, lastName });
-    email = `${email}${i + 1}`;
+    email = `${email}`;
     await PrismaClient.user.create({
       data: {
         email: email,
