@@ -3,19 +3,19 @@ import * as ClimbController from '../controllers/ClimbController.js';
 import {
   createClimbValidations,
   getClimbValidations,
-  updateClimbValidations
+  updateClimbValidations,
 } from '../validations/ClimbValidations.js';
 import { withValidation } from '../validations/validationUtils.js';
 
 const ClimbRouter = Router({ mergeParams: true });
 
 ClimbRouter.use((req, res, next) => {
-  res.set('Allow', 'GET, POST, PATCH');
+  res.set('Allow', 'GET, POST, PATCH, DELETE');
   res.set('Content-Type', 'application/json');
   res.set('Accept', 'application/json');
   res.set('Accept-Patch', 'application/json');
   next();
-})
+});
 
 ClimbRouter.get(
   '/',
@@ -40,5 +40,7 @@ ClimbRouter.patch(
   withValidation(updateClimbValidations),
   ClimbController.updateClimb
 );
+
+ClimbRouter.delete('/:climbId', ClimbController.deleteClimb);
 
 export default ClimbRouter;

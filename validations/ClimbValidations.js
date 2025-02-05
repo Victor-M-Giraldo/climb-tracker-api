@@ -38,7 +38,7 @@ const updateClimbValidations = [
     .isBoolean()
     .withMessage('Completed must be a boolean')
     .toBoolean(),
-]
+];
 
 const createClimbValidations = [
   body('grade')

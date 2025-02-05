@@ -94,6 +94,28 @@ const getClimb = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteClimb = asyncHandler(async (req, res) => {
+  let { userId, climbId } = req.params;
+  userId = parseInt(userId);
+  climbId = parseInt(climbId);
+
+  if (req.user.id !== userId) {
+    res.status(403);
+    throw new ApiException(
+      'You are not authorized to delete climbs for this user',
+      403
+    );
+  }
+
+  await PrismaClient.climb.delete({
+    where: {
+      id: climbId,
+    },
+  });
+
+  return res.status(204).end();
+});
+
 const updateClimb = asyncHandler(async (req, res) => {
   let { userId, climbId } = req.params;
   const { grade, location, completed } = req.body;
@@ -132,7 +154,7 @@ const updateClimb = asyncHandler(async (req, res) => {
   });
 
   res.set('Content-Location', `/users/${userId}/climbs/${climbId}`);
-  return res.status(204);
-})
+  return res.status(204).end();
+});
 
-export { createClimb, getClimbsForUser, getClimb, updateClimb };
+export { createClimb, getClimbsForUser, getClimb, updateClimb, deleteClimb };
