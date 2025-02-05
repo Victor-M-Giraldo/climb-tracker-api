@@ -6,6 +6,7 @@ import {
   updateClimbValidations,
 } from '../validations/ClimbValidations.js';
 import { withValidation } from '../validations/validationUtils.js';
+import NoteRouter from './NoteRouter.js';
 
 const ClimbRouter = Router({ mergeParams: true });
 
@@ -42,5 +43,7 @@ ClimbRouter.patch(
 );
 
 ClimbRouter.delete('/:climbId', ClimbController.deleteClimb);
+
+ClimbRouter.use("/:climbId/notes", NoteRouter);
 
 export default ClimbRouter;
