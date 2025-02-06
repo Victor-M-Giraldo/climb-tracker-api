@@ -15,7 +15,6 @@ model User {
   firstName String
   lastName  String
   climbs    Climb[]
-  progress  Progress?
 
   @@map("users")
 }
@@ -43,16 +42,4 @@ model Note {
   climb     Climb    @relation(fields: [climbId], references: [id], onDelete: Cascade)
 
   @@map("notes")
-}
-
-model Progress {
-  id           Int      @id @default(autoincrement())
-  userId       Int      @unique
-  totalClimbs  Int
-  hardestGrade String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("progress")
 }
