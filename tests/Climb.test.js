@@ -1,8 +1,8 @@
 import PrismaClient from '../database/PrismaClient.js';
-import ClimbRouter from '../routes/ClimbRouter.js';
+import ClimbRouter from '../routes/climb-router.js';
 import request from 'supertest';
 import express from 'express';
-import UserRouter from '../routes/UserRouter.js';
+import UserRouter from '../routes/user-router.js';
 import ErrorHandler from '../middleware/errorhandler.js';
 import { issueJWT } from '../utils/authUtils.js';
 

@@ -2,7 +2,7 @@ import PrismaClient from '../database/PrismaClient.js';
 import express from 'express';
 import request from 'supertest';
 import bcryptjs from 'bcryptjs';
-import UserRouter from '../routes/UserRouter.js';
+import UserRouter from '../routes/user-router.js';
 import ErrorHandler from '../middleware/errorhandler.js';
 
 const app = express();

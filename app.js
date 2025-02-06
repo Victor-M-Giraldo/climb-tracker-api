@@ -1,6 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
-import UserRouter from './routes/UserRouter.js';
+import UserRouter from './routes/user-router.js';
 import morgan from './config/loggers/morgan.js';
 import logger from './config/loggers/winston.js';
 import ErrorHandler from './middleware/errorhandler.js';
