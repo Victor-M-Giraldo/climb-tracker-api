@@ -2,10 +2,10 @@ import * as UserController from '../controllers/UserController.js';
 import {
   registrationValidations,
   loginValidations,
-} from '../validations/UserValidations.js';
-import { withValidation } from '../validations/validationUtils.js';
+} from '../validations/user-validations.js';
+import { withValidation } from '../validations/validation-utils.js';
 import { Router } from 'express';
-import ClimbRouter from './ClimbRouter.js';
+import ClimbRouter from './climb-router.js';
 import passport from '../config/auth/passport.js';
 
 const UserRouter = Router();

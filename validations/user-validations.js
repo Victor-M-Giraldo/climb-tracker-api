@@ -1,16 +1,13 @@
 import { body } from 'express-validator';
 
-const registrationValidations = [
-  body('firstName')
+const validateName = (name) =>
+  body(name)
     .isString()
     .trim()
     .isLength({ min: 2, max: 50 })
-    .withMessage('First name must be between 2 and 50 characters'),
-  body('lastName')
-    .isString()
-    .trim()
-    .isLength({ min: 2, max: 50 })
-    .withMessage('Last name must be between 2 and 50 characters'),
+    .withMessage(`${name} must be beteen 2 and 50 characters`);
+
+const validateEmail = () =>
   body('email')
     .isString()
     .trim()
@@ -18,7 +15,9 @@ const registrationValidations = [
     .withMessage('Email is required')
     .bail()
     .isEmail()
-    .withMessage('Email must be a valid email address'),
+    .withMessage('Email must be a valid email address');
+
+const validatePassword = () =>
   body('password')
     .isString()
     .trim()
@@ -34,18 +33,17 @@ const registrationValidations = [
     })
     .withMessage(
       'Password must be at least 12 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol'
-    ),
+    );
+
+const registrationValidations = [
+  validateName('firstName'),
+  validateName('lastName'),
+  validateEmail(),
+  validatePassword(),
 ];
 
 const loginValidations = [
-  body('email')
-    .isString()
-    .trim()
-    .notEmpty()
-    .withMessage('Email is required')
-    .bail()
-    .isEmail()
-    .withMessage('Email must be a valid email address'),
+  validateEmail(),
   body('password')
     .isString()
     .trim()
