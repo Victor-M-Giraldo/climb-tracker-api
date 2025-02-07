@@ -66,10 +66,12 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiException('Invalid email or password', 401);
   }
 
-  const { password: _, ...existingUser } = user;
+  const { token, expiresIn } = issueJWT(user);
 
-  const { token, expiresIn } = issueJWT(existingUser);
-
+  const existingUser = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+  };
   res.json({
     message: 'User logged in successfully',
     data: {
