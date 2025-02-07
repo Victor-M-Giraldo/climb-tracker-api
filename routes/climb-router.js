@@ -2,7 +2,6 @@ import { Router } from 'express';
 import * as ClimbController from '../controllers/ClimbController.js';
 import {
   createClimbValidations,
-  getClimbValidations,
   updateClimbValidations,
 } from '../validations/climb-validations.js';
 import { withValidation } from '../validations/validation-utils.js';
@@ -18,17 +17,9 @@ ClimbRouter.use((req, res, next) => {
   next();
 });
 
-ClimbRouter.get(
-  '/',
-  withValidation(getClimbValidations),
-  ClimbController.getClimbsForUser
-);
+ClimbRouter.get('/', ClimbController.getClimbsForUser);
 
-ClimbRouter.get(
-  '/:climbId',
-  withValidation(getClimbValidations),
-  ClimbController.getClimbsForUser
-);
+ClimbRouter.get('/:climbId', ClimbController.getClimbsForUser);
 
 ClimbRouter.post(
   '/',

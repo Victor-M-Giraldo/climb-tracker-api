@@ -3,25 +3,14 @@ import PrismaClient from '../database/PrismaClient.js';
 import { ApiException } from '../errors/ApiErrors.js';
 
 const getClimbsForUser = asyncHandler(async (req, res) => {
-  let { userId } = req.params;
-
-  userId = parseInt(userId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view climbs for this user',
-      403
-    );
-  }
-
   const climbs = await PrismaClient.climb.findMany({
     where: {
-      userId: userId,
+      userId: req.user.id,
     },
+    include: {},
   });
 
-  res.json({
+  res.status(200).json({
     data: {
       climbs,
     },
@@ -30,16 +19,6 @@ const getClimbsForUser = asyncHandler(async (req, res) => {
 
 const createClimb = asyncHandler(async (req, res) => {
   const { grade, location, completed } = req.body;
-  let { userId } = req.params;
-  userId = parseInt(userId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to create a climb for this user',
-      403
-    );
-  }
 
   const climb = await PrismaClient.climb.create({
     data: {
@@ -48,7 +27,7 @@ const createClimb = asyncHandler(async (req, res) => {
       completed: completed,
       user: {
         connect: {
-          id: userId,
+          id: req.user.id,
         },
       },
     },
@@ -63,18 +42,7 @@ const createClimb = asyncHandler(async (req, res) => {
 });
 
 const getClimb = asyncHandler(async (req, res) => {
-  let { userId, climbId } = req.params;
-
-  userId = parseInt(userId);
-  climbId = parseInt(climbId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view climbs for this user',
-      403
-    );
-  }
+  let { climbId } = req.params;
 
   const climb = await PrismaClient.climb.findUnique({
     where: {
@@ -95,17 +63,7 @@ const getClimb = asyncHandler(async (req, res) => {
 });
 
 const deleteClimb = asyncHandler(async (req, res) => {
-  let { userId, climbId } = req.params;
-  userId = parseInt(userId);
-  climbId = parseInt(climbId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to delete climbs for this user',
-      403
-    );
-  }
+  let { climbId } = req.params;
 
   await PrismaClient.climb.delete({
     where: {
@@ -117,19 +75,8 @@ const deleteClimb = asyncHandler(async (req, res) => {
 });
 
 const updateClimb = asyncHandler(async (req, res) => {
-  let { userId, climbId } = req.params;
+  let { climbId } = req.params;
   const { grade, location, completed } = req.body;
-
-  userId = parseInt(userId);
-  climbId = parseInt(climbId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view climbs for this user',
-      403
-    );
-  }
 
   const updateData = {};
   if (grade) {
@@ -153,7 +100,7 @@ const updateClimb = asyncHandler(async (req, res) => {
     },
   });
 
-  res.set('Content-Location', `/users/${userId}/climbs/${climbId}`);
+  res.set('Content-Location', `/climbs/${climbId}`);
   return res.status(204).end();
 });
 

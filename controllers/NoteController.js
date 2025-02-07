@@ -3,27 +3,21 @@ import PrismaClient from '../database/PrismaClient.js';
 import { ApiException } from '../errors/ApiErrors.js';
 
 const getNote = expressAsyncHandler(async (req, res) => {
-  let { userId, climbId, noteId } = req.params;
-  userId = parseInt(userId);
+  let { climbId, noteId } = req.params;
   climbId = parseInt(climbId);
   noteId = parseInt(noteId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view notes for this user',
-      403
-    );
-  }
 
   const climb = await PrismaClient.climb.findUnique({
     where: {
       id: climbId,
-      userId: userId,
     },
   });
 
   if (!climb) {
+    throw new ApiException('Climb not found', 404);
+  }
+
+  if (climb.userId !== req.user.id) {
     res.status(403);
     throw new ApiException(
       'You are not authorized to view notes for this climb',
@@ -34,9 +28,19 @@ const getNote = expressAsyncHandler(async (req, res) => {
   const note = await PrismaClient.note.findUnique({
     where: {
       id: noteId,
-      climbId: climbId,
     },
   });
+
+  if (!note) {
+    throw new ApiException('Note not found', 404);
+  }
+
+  if (note.climbId !== climb.id) {
+    throw new ApiException(
+      'You are not authorized to view notes for this climb',
+      403
+    );
+  }
 
   if (!note) {
     res.status(404);
@@ -51,28 +55,22 @@ const getNote = expressAsyncHandler(async (req, res) => {
 });
 
 const createNote = expressAsyncHandler(async (req, res) => {
-  let { userId, climbId } = req.params;
+  let { climbId } = req.params;
   const { content } = req.body;
 
-  userId = parseFloat(userId);
   climbId = parseFloat(climbId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view notes for this user',
-      403
-    );
-  }
 
   const climb = await PrismaClient.climb.findUnique({
     where: {
       id: climbId,
-      userId: userId,
     },
   });
 
   if (!climb) {
+    throw new ApiException('Climb not found', 404);
+  }
+
+  if (climb.userId !== req.user.id) {
     res.status(403);
     throw new ApiException(
       'You are not authorized to view notes for this climb',
@@ -83,7 +81,11 @@ const createNote = expressAsyncHandler(async (req, res) => {
   const note = await PrismaClient.note.create({
     data: {
       content,
-      climbId,
+      climb: {
+        connect: {
+          id: climb.id,
+        },
+      },
     },
   });
 
@@ -96,29 +98,40 @@ const createNote = expressAsyncHandler(async (req, res) => {
 });
 
 const deleteNote = expressAsyncHandler(async (req, res) => {
-  let { userId, climbId, noteId } = req.params;
+  let { climbId, noteId } = req.params;
 
-  userId = parseInt(userId);
   climbId = parseInt(climbId);
   noteId = parseInt(noteId);
-
-  if (req.user.id !== userId) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view notes for this user',
-      403
-    );
-  }
 
   const climb = await PrismaClient.climb.findUnique({
     where: {
       id: climbId,
-      userId: userId,
     },
   });
 
   if (!climb) {
+    throw new ApiException('Climb not found', 404);
+  }
+
+  if (climb.userId !== req.user.id) {
     res.status(403);
+    throw new ApiException(
+      'You are not authorized to view notes for this climb',
+      403
+    );
+  }
+
+  const note = await PrismaClient.note.findUnique({
+    where: {
+      id: noteId,
+    },
+  });
+
+  if (!note) {
+    throw new ApiException('Note not found', 404);
+  }
+
+  if (note.climbId !== climb.id) {
     throw new ApiException(
       'You are not authorized to view notes for this climb',
       403
@@ -127,7 +140,6 @@ const deleteNote = expressAsyncHandler(async (req, res) => {
 
   await PrismaClient.note.delete({
     where: {
-      climbId: climbId,
       id: noteId,
     },
   });

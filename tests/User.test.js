@@ -7,14 +7,14 @@ import ErrorHandler from '../middleware/errorhandler.js';
 
 const app = express();
 app.use(express.json());
-app.use('/users', UserRouter);
+app.use('/', UserRouter);
 app.use(ErrorHandler);
 
 describe('User Registration', () => {
   afterEach(() => {
     vi.resetAllMocks();
   });
-  test('POST /users/register', async () => {
+  test('POST /register', async () => {
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
     PrismaClient.user.create = vi.fn().mockResolvedValue({
       id: 1,
@@ -24,7 +24,7 @@ describe('User Registration', () => {
     });
 
     const response = await request(app)
-      .post('/users/register')
+      .post('/register')
       .send({
         firstName: 'Test',
         lastName: 'User',
@@ -53,7 +53,7 @@ describe('User Registration', () => {
     });
   });
 
-  test('POST /users/register with duplicate email', async () => {
+  test('POST /register with duplicate email', async () => {
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
       id: 1,
       firstName: 'Test',
@@ -62,7 +62,7 @@ describe('User Registration', () => {
     });
 
     const response = await request(app)
-      .post('/users/register')
+      .post('/register')
       .send({
         firstName: 'Test',
         lastName: 'User',
@@ -79,8 +79,8 @@ describe('User Registration', () => {
     });
   });
 
-  test('POST /users/register with a first name that is too short', async () => {
-    const response = await request(app).post('/users/register').send({
+  test('POST /register with a first name that is too short', async () => {
+    const response = await request(app).post('/register').send({
       firstName: 'T',
       lastName: 'User',
       email: 'testuser@gmail.com',
@@ -90,9 +90,9 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a first name that is too long', async () => {
+  test('POST /register with a first name that is too long', async () => {
     const response = await request(app)
-      .post('/users/register')
+      .post('/register')
       .send({
         firstName: 'T'.repeat(51),
         lastName: 'User',
@@ -103,8 +103,8 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a last name that is too short', async () => {
-    const response = await request(app).post('/users/register').send({
+  test('POST /register with a last name that is too short', async () => {
+    const response = await request(app).post('/register').send({
       firstName: 'Test',
       lastName: 'U',
       email: 'testuser@gmail.com',
@@ -114,9 +114,9 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a last name that is too long', async () => {
+  test('POST /register with a last name that is too long', async () => {
     const response = await request(app)
-      .post('/users/register')
+      .post('/register')
       .send({
         firstName: 'Test',
         lastName: 'U'.repeat(51),
@@ -127,8 +127,8 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a password that is too short', async () => {
-    const response = await request(app).post('/users/register').send({
+  test('POST /register with a password that is too short', async () => {
+    const response = await request(app).post('/register').send({
       firstName: 'Test',
       lastName: 'User',
       email: 'testuser@gmail.com',
@@ -137,9 +137,9 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a password that is too long', async () => {
+  test('POST /register with a password that is too long', async () => {
     const response = await request(app)
-      .post('/users/register')
+      .post('/register')
       .send({
         firstName: 'Test',
         lastName: 'User',
@@ -149,8 +149,8 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a password that does not contain at least one capital letter', async () => {
-    const response = await request(app).post('/users/register').send({
+  test('POST /register with a password that does not contain at least one capital letter', async () => {
+    const response = await request(app).post('/register').send({
       firstName: 'Test',
       lastName: 'User',
       email: 'testuser@gmail.com',
@@ -159,8 +159,8 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a password that does not contain at least lowercase capital letter', async () => {
-    const response = await request(app).post('/users/register').send({
+  test('POST /register with a password that does not contain at least lowercase capital letter', async () => {
+    const response = await request(app).post('/register').send({
       firstName: 'Test',
       lastName: 'User',
       email: 'testuser@gmail.com',
@@ -169,8 +169,8 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a password that does not contain at least one symbol', async () => {
-    const response = await request(app).post('/users/register').send({
+  test('POST /register with a password that does not contain at least one symbol', async () => {
+    const response = await request(app).post('/register').send({
       firstName: 'Test',
       lastName: 'User',
       email: 'testuser@gmail.com',
@@ -179,8 +179,8 @@ describe('User Registration', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/register with a password that does not contain at least one number', async () => {
-    const response = await request(app).post('/users/register').send({
+  test('POST /register with a password that does not contain at least one number', async () => {
+    const response = await request(app).post('/register').send({
       firstName: 'Test',
       lastName: 'User',
       email: 'testuser@gmail.com',
@@ -194,7 +194,7 @@ describe('User Login', () => {
   afterEach(() => {
     vi.resetAllMocks();
   });
-  test('POST /users/login', async () => {
+  test('POST /login', async () => {
     bcryptjs.compare = vi.fn().mockResolvedValue(true);
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
       id: 1,
@@ -204,7 +204,7 @@ describe('User Login', () => {
       password: 'Passwordss%1',
     });
 
-    const response = await request(app).post('/users/login').send({
+    const response = await request(app).post('/login').send({
       email: 'testuser@gmail.com',
       password: 'Passwordss%1',
     });
@@ -217,17 +217,15 @@ describe('User Login', () => {
         expiresIn: '7d',
         token: expect.any(String),
         user: {
-          id: 1,
           firstName: 'Test',
           lastName: 'User',
-          email: 'testuser@gmail.com',
         },
       },
     });
   });
 
-  test('POST /users/login with invalid email', async () => {
-    const response = await request(app).post('/users/login').send({
+  test('POST /login with invalid email', async () => {
+    const response = await request(app).post('/login').send({
       email: 'abcdefgh',
       password: 'Passwordss%1',
     });
@@ -235,8 +233,8 @@ describe('User Login', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/login with no email', async () => {
-    const response = await request(app).post('/users/login').send({
+  test('POST /login with no email', async () => {
+    const response = await request(app).post('/login').send({
       email: '',
       password: 'Passwordss%1',
     });
@@ -244,8 +242,8 @@ describe('User Login', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/login with no password', async () => {
-    const response = await request(app).post('/users/login').send({
+  test('POST /login with no password', async () => {
+    const response = await request(app).post('/login').send({
       email: 'testuser@gmail.com',
       password: '',
     });
@@ -253,10 +251,10 @@ describe('User Login', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test('POST /users/login with email that does not match', async () => {
+  test('POST /login with email that does not match', async () => {
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
 
-    const response = await request(app).post('/users/login').send({
+    const response = await request(app).post('/login').send({
       email: 'testuser@gmail.com',
       password: 'Passwordss%1',
     });
@@ -264,7 +262,7 @@ describe('User Login', () => {
     expect(response.statusCode).toBe(401);
   });
 
-  test('POST /users/login with password that does not match', async () => {
+  test('POST /login with password that does not match', async () => {
     PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
       id: 1,
       firstName: 'Test',
@@ -273,7 +271,7 @@ describe('User Login', () => {
       password: 'password',
     });
 
-    const response = await request(app).post('/users/login').send({
+    const response = await request(app).post('/login').send({
       email: 'testuser@gmail.com',
       password: 'Passwordsx%1',
     });
