@@ -10,10 +10,10 @@ const validateContent = () =>
       'The content of the note must be between 10 and 255 characters.'
     );
 
-const getNoteValidations = [validateId('noteId')];
+const getNoteValidations = [validateId('climbId'), validateId('noteId')];
 
-const deleteNoteValidations = [validateId('noteId')];
+const deleteNoteValidations = [validateId('climbId'), validateId('noteId')];
 
-const createNoteValidations = [validateContent()];
+const createNoteValidations = [validateId('climbId'), validateContent()];
 
 export { createNoteValidations, getNoteValidations, deleteNoteValidations };

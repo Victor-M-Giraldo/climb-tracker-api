@@ -1,49 +1,23 @@
 import expressAsyncHandler from 'express-async-handler';
 import PrismaClient from '../database/PrismaClient.js';
 import { ApiException } from '../errors/ApiErrors.js';
+import { isPrismaError } from '../utils/prismaUtils.js';
 
 const getNote = expressAsyncHandler(async (req, res) => {
-  let { climbId, noteId } = req.params;
-  climbId = parseInt(climbId);
-  noteId = parseInt(noteId);
-
-  const climb = await PrismaClient.climb.findUnique({
-    where: {
-      id: climbId,
-    },
-  });
-
-  if (!climb) {
-    throw new ApiException('Climb not found', 404);
-  }
-
-  if (climb.userId !== req.user.id) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view notes for this climb',
-      403
-    );
-  }
+  const { climbId, noteId } = req.params;
+  const userId = req.user.id;
 
   const note = await PrismaClient.note.findUnique({
     where: {
       id: noteId,
+      climb: {
+        id: climbId,
+        userId: userId,
+      },
     },
   });
 
   if (!note) {
-    throw new ApiException('Note not found', 404);
-  }
-
-  if (note.climbId !== climb.id) {
-    throw new ApiException(
-      'You are not authorized to view notes for this climb',
-      403
-    );
-  }
-
-  if (!note) {
-    res.status(404);
     throw new ApiException('Note not found', 404);
   }
 
@@ -55,94 +29,57 @@ const getNote = expressAsyncHandler(async (req, res) => {
 });
 
 const createNote = expressAsyncHandler(async (req, res) => {
-  let { climbId } = req.params;
+  const { climbId } = req.params;
   const { content } = req.body;
+  const userId = req.user.id;
 
-  climbId = parseFloat(climbId);
-
-  const climb = await PrismaClient.climb.findUnique({
-    where: {
-      id: climbId,
-    },
-  });
-
-  if (!climb) {
-    throw new ApiException('Climb not found', 404);
-  }
-
-  if (climb.userId !== req.user.id) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view notes for this climb',
-      403
-    );
-  }
-
-  const note = await PrismaClient.note.create({
-    data: {
-      content,
-      climb: {
-        connect: {
-          id: climb.id,
+  try {
+    const note = await PrismaClient.note.create({
+      data: {
+        content,
+        climb: {
+          connect: {
+            id: climbId,
+            userId: userId,
+          },
         },
       },
-    },
-  });
+    });
 
-  res.status(201).json({
-    message: 'Note created successfully',
-    data: {
-      note,
-    },
-  });
+    return res.status(201).json({
+      message: 'Note created successfully',
+      data: { note },
+    });
+  } catch (e) {
+    if (isPrismaError(e, 'P2025')) {
+      throw new ApiException('Climb not found or unauthorized', 404);
+    } else {
+      throw new ApiException('Something went wrong', 500);
+    }
+  }
 });
 
 const deleteNote = expressAsyncHandler(async (req, res) => {
   let { climbId, noteId } = req.params;
+  let userId = req.user.id;
 
-  climbId = parseInt(climbId);
-  noteId = parseInt(noteId);
-
-  const climb = await PrismaClient.climb.findUnique({
-    where: {
-      id: climbId,
-    },
-  });
-
-  if (!climb) {
-    throw new ApiException('Climb not found', 404);
+  try {
+    await PrismaClient.note.delete({
+      where: {
+        id: noteId,
+        climb: {
+          id: climbId,
+          userId: userId,
+        },
+      },
+    });
+  } catch (e) {
+    if (isPrismaError(e, 'P2025')) {
+      throw new ApiException('Climb not found or unauthorized', 404);
+    } else {
+      throw new ApiException('Something went wrong', 500);
+    }
   }
-
-  if (climb.userId !== req.user.id) {
-    res.status(403);
-    throw new ApiException(
-      'You are not authorized to view notes for this climb',
-      403
-    );
-  }
-
-  const note = await PrismaClient.note.findUnique({
-    where: {
-      id: noteId,
-    },
-  });
-
-  if (!note) {
-    throw new ApiException('Note not found', 404);
-  }
-
-  if (note.climbId !== climb.id) {
-    throw new ApiException(
-      'You are not authorized to view notes for this climb',
-      403
-    );
-  }
-
-  await PrismaClient.note.delete({
-    where: {
-      id: noteId,
-    },
-  });
 
   return res.status(204).end();
 });
