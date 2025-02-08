@@ -9,7 +9,7 @@ export default function ErrorHandler(err, req, res, _next) {
     return res.status(err.status).json({
       type: err.name,
       message: err.message,
-     });
+    });
   }
 
   if (err instanceof ValidationError) {
