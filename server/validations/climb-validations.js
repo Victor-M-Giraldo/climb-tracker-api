@@ -21,7 +21,6 @@ const validateLocation = () =>
 
 const validateCompleted = () =>
   body('completed')
-    .optional()
     .trim()
     .isBoolean()
     .withMessage('Completed must be a boolean')
@@ -37,7 +36,7 @@ const updateClimbValidations = [
 const createClimbValidations = [
   validateGrade(),
   validateLocation(),
-  validateCompleted(),
+  validateCompleted().optional(),
 ];
 
 const deleteClimbValidations = [validateId('climbId')];
