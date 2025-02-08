@@ -7,7 +7,6 @@ const getClimbsForUser = asyncHandler(async (req, res) => {
     where: {
       userId: req.user.id,
     },
-    include: {},
   });
 
   res.status(200).json({
@@ -34,7 +33,6 @@ const createClimb = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({
-    message: 'Climb created successfully',
     data: {
       climb,
     },
@@ -42,11 +40,12 @@ const createClimb = asyncHandler(async (req, res) => {
 });
 
 const getClimb = asyncHandler(async (req, res) => {
-  let { climbId } = req.params;
+  const { climbId } = req.params;
 
   const climb = await PrismaClient.climb.findUnique({
     where: {
       id: climbId,
+      userId: req.user.id, // Secure and efficient
     },
   });
 
@@ -55,23 +54,29 @@ const getClimb = asyncHandler(async (req, res) => {
     throw new ApiException('Climb not found', 404);
   }
 
-  return res.status(200).json({
-    data: {
-      climb,
-    },
-  });
+  return res.status(200).json({ data: { climb } });
 });
 
 const deleteClimb = asyncHandler(async (req, res) => {
   let { climbId } = req.params;
 
-  await PrismaClient.climb.delete({
-    where: {
-      id: climbId,
-    },
-  });
-
-  return res.status(204).end();
+  try {
+    await PrismaClient.climb.delete({
+      where: {
+        id: climbId,
+        userId: req.user.id,
+      },
+    });
+    return res.status(204).end();
+  } catch (e) {
+    if (e.code === 'P2025') {
+      res.status(404);
+      throw new ApiException('Climb not found', 404);
+    } else {
+      res.status(500);
+      throw new ApiException('Something went wrong', 500);
+    }
+  }
 });
 
 const updateClimb = asyncHandler(async (req, res) => {
