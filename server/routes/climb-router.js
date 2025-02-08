@@ -9,7 +9,7 @@ import {
 import { withValidation } from '../validations/validation-utils.js';
 import NoteRouter from './note-router.js';
 
-const ClimbRouter = Router({ mergeParams: true });
+const ClimbRouter = Router();
 
 ClimbRouter.use((req, res, next) => {
   res.set('Allow', 'GET, POST, PATCH, DELETE');
