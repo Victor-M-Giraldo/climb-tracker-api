@@ -3,7 +3,6 @@ import { validateId } from './common-validations.js';
 
 const validateContent = () =>
   body('content')
-    .isString()
     .trim()
     .isLength({ min: 10, max: 255 })
     .withMessage(
