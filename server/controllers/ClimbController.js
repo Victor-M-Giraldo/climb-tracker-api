@@ -96,7 +96,7 @@ const updateClimb = asyncHandler(async (req, res) => {
   if (completed) {
     updateData.completed = completed;
   }
-  
+
   try {
     await PrismaClient.climb.update({
       where: {

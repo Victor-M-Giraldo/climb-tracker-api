@@ -10,19 +10,19 @@ import { withValidation } from '../validations/validation-utils.js';
 const NoteRouter = Router({ mergeParams: true });
 
 NoteRouter.get(
-  '/:noteId',
+  '/:climbId/notes/:noteId',
   withValidation(getNoteValidations),
   NoteController.getNote
 );
 
 NoteRouter.delete(
-  '/:noteId',
+  '/:climbId/notes/:noteId',
   withValidation(deleteNoteValidations),
   NoteController.deleteNote
 );
 
 NoteRouter.post(
-  '/',
+  '/:climbId/notes',
   withValidation(createNoteValidations),
   NoteController.createNote
 );

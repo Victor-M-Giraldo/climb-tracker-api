@@ -4,7 +4,7 @@ import {
   createClimbValidations,
   updateClimbValidations,
   deleteClimbValidations,
-  getClimbValidations
+  getClimbValidations,
 } from '../validations/climb-validations.js';
 import { withValidation } from '../validations/validation-utils.js';
 import NoteRouter from './note-router.js';
@@ -21,7 +21,11 @@ ClimbRouter.use((req, res, next) => {
 
 ClimbRouter.get('/', ClimbController.getClimbsForUser);
 
-ClimbRouter.get('/:climbId', withValidation(getClimbValidations), ClimbController.getClimb);
+ClimbRouter.get(
+  '/:climbId',
+  withValidation(getClimbValidations),
+  ClimbController.getClimb
+);
 
 ClimbRouter.post(
   '/',
@@ -35,8 +39,12 @@ ClimbRouter.patch(
   ClimbController.updateClimb
 );
 
-ClimbRouter.delete('/:climbId', withValidation(deleteClimbValidations), ClimbController.deleteClimb);
+ClimbRouter.delete(
+  '/:climbId',
+  withValidation(deleteClimbValidations),
+  ClimbController.deleteClimb
+);
 
-ClimbRouter.use('/:climbId/notes', NoteRouter);
+ClimbRouter.use('/', NoteRouter);
 
 export default ClimbRouter;
