@@ -3,6 +3,7 @@ import * as ClimbController from '../controllers/ClimbController.js';
 import {
   createClimbValidations,
   updateClimbValidations,
+  deleteClimbValidations
 } from '../validations/climb-validations.js';
 import { withValidation } from '../validations/validation-utils.js';
 import NoteRouter from './note-router.js';
@@ -33,7 +34,7 @@ ClimbRouter.patch(
   ClimbController.updateClimb
 );
 
-ClimbRouter.delete('/:climbId', ClimbController.deleteClimb);
+ClimbRouter.delete('/:climbId', withValidation(deleteClimbValidations), ClimbController.deleteClimb);
 
 ClimbRouter.use('/:climbId/notes', NoteRouter);
 

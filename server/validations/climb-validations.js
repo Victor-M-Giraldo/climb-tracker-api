@@ -1,5 +1,6 @@
 import { body } from 'express-validator';
 import { GRADES } from '../constants/index.js';
+import { validateId } from "./common-validations.js"
 
 const validateGrade = () =>
   body('grade')
@@ -38,4 +39,8 @@ const createClimbValidations = [
   validateCompleted(),
 ];
 
-export { createClimbValidations, updateClimbValidations };
+const deleteClimbValidations = [
+  validateId('climbId')
+]
+
+export { createClimbValidations, updateClimbValidations, deleteClimbValidations};
