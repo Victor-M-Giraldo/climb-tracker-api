@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import PrismaClient from '../database/PrismaClient.js';
 import { ApiException } from '../errors/ApiErrors.js';
+import { isPrismaError } from '../utils/prismaUtils.js';
 
 const getClimbsForUser = asyncHandler(async (req, res) => {
   const climbs = await PrismaClient.climb.findMany({
@@ -45,7 +46,7 @@ const getClimb = asyncHandler(async (req, res) => {
   const climb = await PrismaClient.climb.findUnique({
     where: {
       id: climbId,
-      userId: req.user.id, // Secure and efficient
+      userId: req.user.id,
     },
   });
 
@@ -69,7 +70,7 @@ const deleteClimb = asyncHandler(async (req, res) => {
     });
     return res.status(204).end();
   } catch (e) {
-    if (e.code === 'P2025') {
+    if (isPrismaError(e, 'P2025')) {
       res.status(404);
       throw new ApiException('Climb not found', 404);
     } else {
@@ -95,15 +96,26 @@ const updateClimb = asyncHandler(async (req, res) => {
   if (completed) {
     updateData.completed = completed;
   }
-
-  await PrismaClient.climb.update({
-    where: {
-      id: climbId,
-    },
-    data: {
-      ...updateData,
-    },
-  });
+  
+  try {
+    await PrismaClient.climb.update({
+      where: {
+        id: climbId,
+        userId: req.user.id,
+      },
+      data: {
+        ...updateData,
+      },
+    });
+  } catch (e) {
+    if (isPrismaError(e, 'P2025')) {
+      res.status(404);
+      throw new ApiException('Climb not found', 404);
+    } else {
+      res.status(500);
+      throw new ApiException('Something went wrong', 500);
+    }
+  }
 
   res.set('Content-Location', `/climbs/${climbId}`);
   return res.status(204).end();

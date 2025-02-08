@@ -3,7 +3,8 @@ import * as ClimbController from '../controllers/ClimbController.js';
 import {
   createClimbValidations,
   updateClimbValidations,
-  deleteClimbValidations
+  deleteClimbValidations,
+  getClimbValidations
 } from '../validations/climb-validations.js';
 import { withValidation } from '../validations/validation-utils.js';
 import NoteRouter from './note-router.js';
@@ -20,7 +21,7 @@ ClimbRouter.use((req, res, next) => {
 
 ClimbRouter.get('/', ClimbController.getClimbsForUser);
 
-ClimbRouter.get('/:climbId', ClimbController.getClimbsForUser);
+ClimbRouter.get('/:climbId', withValidation(getClimbValidations), ClimbController.getClimb);
 
 ClimbRouter.post(
   '/',

@@ -31,6 +31,7 @@ const updateClimbValidations = [
   validateGrade().optional(),
   validateLocation().optional(),
   validateCompleted(),
+  validateId('climbId')
 ];
 
 const createClimbValidations = [
@@ -43,4 +44,8 @@ const deleteClimbValidations = [
   validateId('climbId')
 ]
 
-export { createClimbValidations, updateClimbValidations, deleteClimbValidations};
+const getClimbValidations = [
+  validateId('climbId')
+]
+
+export { createClimbValidations, updateClimbValidations, deleteClimbValidations, getClimbValidations };
