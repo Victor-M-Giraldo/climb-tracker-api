@@ -6,68 +6,66 @@ import bcryptjs from 'bcryptjs';
 const app = configureApp();
 
 describe('User login route', () => {
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
 
-     afterEach(() => {
-       vi.resetAllMocks();
-     });
+  it('Should login a user and return 200', async () => {
+    bcryptjs.compare = vi.fn().mockResolvedValue(true);
 
-     it('Should login a user and return 200', async () => {
+    PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
+      id: 1,
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testuser@gmail.com',
+      password: 'Passwordss%1',
+    });
 
-       bcryptjs.compare = vi.fn().mockResolvedValue(true);
+    const response = await request(app).post('/login').send({
+      email: 'testuser@gmail.com',
+      password: 'Passwordss%1',
+    });
 
-       PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
-         id: 1,
-         firstName: 'Test',
-         lastName: 'User',
-         email: 'testuser@gmail.com',
-         password: 'Passwordss%1',
-       });
+    expect(response.statusCode).toBe(200);
 
-       const response = await request(app).post('/login').send({
-         email: 'testuser@gmail.com',
-         password: 'Passwordss%1',
-       });
+    expect(response.body).toEqual({
+      message: 'User logged in successfully',
+      data: {
+        expiresIn: '7d',
+        token: expect.any(String),
+        user: {
+          firstName: 'Test',
+          lastName: 'User',
+        },
+      },
+    });
+  });
 
-       expect(response.statusCode).toBe(200);
+  it('Should return a 401 when the user account does not exist', async () => {
+    PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
 
-       expect(response.body).toEqual({
-         message: 'User logged in successfully',
-         data: {
-           expiresIn: '7d',
-           token: expect.any(String),
-           user: {
-             firstName: 'Test',
-             lastName: 'User',
-           },
-         },
-       });
-     });
+    const response = await request(app).post('/login').send({
+      email: 'testuser@gmail.com',
+      password: 'Passwordss%1',
+    });
 
-     it('Should return a 401 when the user account does not exist', async () => {
-       PrismaClient.user.findFirst = vi.fn().mockResolvedValue(null);
+    expect(response.statusCode).toBe(401);
+  });
 
-       const response = await request(app).post('/login').send({
-         email: 'testuser@gmail.com',
-         password: 'Passwordss%1',
-       });
+  it('Should return a 401 when the password does not match', async () => {
+    PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
+      id: 1,
+      firstName: 'Test',
+      lastName: 'User',
+      email: 'testuser@gmail.com',
+      password: 'password',
+    });
 
-       expect(response.statusCode).toBe(401);
-     });
+    const response = await request(app).post('/login').send({
+      email: 'testuser@gmail.com',
+      password: 'Passwordsx%1',
+    });
 
-     it('Should return a 401 when the password does not match', async () => {
-       PrismaClient.user.findFirst = vi.fn().mockResolvedValue({
-         id: 1,
-         firstName: 'Test',
-         lastName: 'User',
-         email: 'testuser@gmail.com',
-         password: 'password',
-       });
-
-       const response = await request(app).post('/login').send({
-         email: 'testuser@gmail.com',
-         password: 'Passwordsx%1',
-       });
-
-       expect(response.statusCode).toBe(401);
-     });
-})
+    expect(response.statusCode).toBe(401);
+  });
+});

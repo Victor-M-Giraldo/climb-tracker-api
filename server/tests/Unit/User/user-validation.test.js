@@ -166,7 +166,6 @@ describe('User registration validation', () => {
 });
 
 describe('User login validation', () => {
-
   it('Should return a 400 when the email does not exist', async () => {
     const response = await request(app).post('/login').send({
       email: '',
@@ -193,5 +192,4 @@ describe('User login validation', () => {
 
     expect(response.statusCode).toBe(400);
   });
-
 });
