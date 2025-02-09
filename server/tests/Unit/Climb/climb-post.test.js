@@ -6,7 +6,6 @@ import configureApp from '../../../utils/testUtils.js';
 const app = configureApp();
 
 describe('POST climb route', () => {
-
   afterEach(() => {
     vi.resetAllMocks();
   });
@@ -32,19 +31,17 @@ describe('POST climb route', () => {
         grade: 'V5',
         location: 'Method Climbing Gym',
         completed: true,
-      })
+      });
 
     expect(response.statusCode).toBe(201);
   });
 
   it('Should return a 401', async () => {
-    const response = await request(app)
-      .post('/climbs')
-      .send({
-        grade: 'V5',
-        location: 'Method Climbing Gym',
-        completed: true,
-      })
+    const response = await request(app).post('/climbs').send({
+      grade: 'V5',
+      location: 'Method Climbing Gym',
+      completed: true,
+    });
 
     expect(response.statusCode).toBe(401);
   });

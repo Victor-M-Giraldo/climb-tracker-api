@@ -29,7 +29,7 @@ const validateCompleted = () =>
 const updateClimbValidations = [
   validateGrade().optional(),
   validateLocation().optional(),
-  validateCompleted(),
+  validateCompleted().optional(),
   validateId('climbId'),
 ];
 

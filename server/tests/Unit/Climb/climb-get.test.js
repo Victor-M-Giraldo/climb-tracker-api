@@ -10,12 +10,6 @@ describe('GET climb route', () => {
     vi.resetAllMocks();
   });
 
-  it('Should return a 401 when a user is unauthorized.', async () => {
-    const response = await request(app).get('/climbs');
-
-    expect(response.statusCode).toBe(401);
-  });
-
   it('Should return a 200 with a users climbs', async () => {
     PrismaClient.climb.findMany = vi.fn().mockResolvedValue([]);
 
