@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export default function Hero() {
     return (
       <>
@@ -16,9 +18,11 @@ export default function Hero() {
               climbs, set goals, and stay motivated. Join a community of
               climbers who are pushing their limits and celebrating every send!
             </p>
-            <button className='btn btn-soft text-md'>Sign Up for Free!</button>
+            <button className='btn btn-soft text-md'>
+              <Link to='/register'>Sign Up for Free!</Link>
+            </button>
           </div>
-          <div className='min-h-[650px] aspect-[2/3] relative not-prose max-w-full overflow-hidden'>
+          <div className='min-h-[600px] aspect-[2/3] relative not-prose max-w-full overflow-hidden md:justify-self-end'>
             <figure className='bg-[url(/climbing.jpg)] h-full bg-center bg-cover'>
               <figcaption className='absolute bottom-0 left-[50%] transform -translate-x-1/2 w-full text-center'>
                 <a

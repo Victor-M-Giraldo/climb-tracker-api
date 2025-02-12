@@ -1,9 +1,13 @@
+import { Link } from "react-router";
+
 export default function Header() {
     return (
       <>
         <header className='p-4 bg-base-100'>
           <div className='max-w-7xl flex m-auto'>
-            <h1 className='text-3xl'>Boulder Log</h1>
+            <h1 className='text-3xl'>
+              <Link to='/'>Boulder Log</Link>
+            </h1>
             <nav className='ml-auto flex items-center'>
               <ul className='flex gap-1'>
                 <a href='' className='hover:link'>
