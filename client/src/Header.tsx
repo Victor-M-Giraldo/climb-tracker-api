@@ -1,7 +1,7 @@
 export default function Header() {
     return (
       <>
-        <header className='p-4 bg-base-200'>
+        <header className='p-4 bg-base-100'>
           <div className='max-w-7xl flex m-auto'>
             <h1 className='text-3xl'>Boulder Log</h1>
             <nav className='ml-auto flex items-center'>

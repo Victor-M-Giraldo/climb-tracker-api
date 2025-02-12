@@ -16,7 +16,7 @@ export default function Hero() {
               climbs, set goals, and stay motivated. Join a community of
               climbers who are pushing their limits and celebrating every send!
             </p>
-            <button className='btn text-md'>Sign Up for Free!</button>
+            <button className='btn btn-soft text-md'>Sign Up for Free!</button>
           </div>
           <div className='min-h-[650px] aspect-[2/3] relative not-prose max-w-full overflow-hidden'>
             <figure className='bg-[url(/climbing.jpg)] h-full bg-center bg-cover'>
