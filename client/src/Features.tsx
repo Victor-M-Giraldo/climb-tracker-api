@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export default function Features() {
     return (
       <section className='max-w-7xl m-auto my-4 prose'>
@@ -10,7 +12,7 @@ export default function Features() {
                 Sign up to start logging your climbs and saving your progress.
               </p>
               <div className='card-actions justify-end'>
-                <button className='btn btn-primary'>Buy Now</button>
+                <button className='btn btn-primary'><Link to='/register'>Sign Up</Link></button>
               </div>
             </div>
           </div>
@@ -21,7 +23,7 @@ export default function Features() {
                 Record your climbs with details like difficulty, gym, and date.
               </p>
               <div className='card-actions justify-end'>
-                <button className='btn btn-primary'>Start Logging</button>
+                <button className='btn btn-primary'><Link to='/'>Start Logging</Link></button>
               </div>
             </div>
           </div>
@@ -33,7 +35,7 @@ export default function Features() {
                 your skills.
               </p>
               <div className='card-actions justify-end'>
-                <button className='btn btn-primary'>Add Your First Note</button>
+                <button className='btn btn-primary'><Link to='/'>Add Your First Note</Link></button>
               </div>
             </div>
           </div>

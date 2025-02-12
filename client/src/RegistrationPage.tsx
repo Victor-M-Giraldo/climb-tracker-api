@@ -1,15 +1,15 @@
-const RegistrationPage: React.FC = () => {
+export default function RegistrationPage() {
   return (
-    <div className='h-full flex items-center justify-center p-6'>
-      <div className='bg-base-100 rounded-lg shadow-md overflow-hidden flex flex-col md:flex-row w-full max-w-4xl'>
-        <div className='hidden md:w-1/2 md:block bg-cover bg-center bg-[url(/chalk-bag.jpg)]'>
+    <section className='h-full flex items-center justify-center p-6'>
+      <div className='bg-base-100 rounded-lg shadow-md grid sm:grid-cols-2 w-full max-w-4xl'>
+        <div className='hidden w-full sm:block bg-cover bg-center bg-[url(/chalk-bag.jpg)] rounded-tl-lg rounded-bl-lg'>
           <div className='h-full p-8 flex items-center justify-center'>
             <h2 className='text-3xl font-bold text-center'>
               Join the Climbing Community
             </h2>
           </div>
         </div>
-        <div className='md:w-1/2 p-8'>
+        <div className='w-full p-8'>
           <h1 className='text-2xl font-bold mb-6'>Create Your Account</h1>
           <form className='space-y-6'>
             <div>
@@ -63,8 +63,6 @@ const RegistrationPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
-
-export default RegistrationPage;
