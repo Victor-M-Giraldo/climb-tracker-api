@@ -1,8 +1,15 @@
+import Header from "./Header"
+import Footer from "./Footer"
+
 function App() {
   return (
-    <>
-    <h1>Hello!</h1>
-    </>
+    <div className="flex flex-col h-full">
+      <Header></Header>
+      <main className="flex-1">
+
+      </main>
+      <Footer></Footer>
+    </div>
   )
 }
 
