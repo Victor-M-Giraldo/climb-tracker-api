@@ -3,7 +3,7 @@ import UserRouter from '../routes/user-router.js';
 import ClimbRouter from '../routes/climb-router.js';
 import NoteRouter from '../routes/note-router.js';
 import passport from '../config/auth/passport.js';
-import ErrorHandler from '../middleware/errorhandler.js';
+import ErrorHandler from '../middleware/ErrorHandler.js';
 
 export default function configureApp() {
   const app = express();
