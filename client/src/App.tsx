@@ -3,7 +3,7 @@ import Layout from './Layout';
 import HomePage from './HomePage';
 import RegistrationPage from './RegistrationPage';
 import ViewClimbsPage from './Climbs';
-
+import LoginPage from './LoginPage';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
         element: <ViewClimbsPage />,
         path: '/climbs',
       },
+      {
+        element: <LoginPage/>,
+        path: '/login'
+      }
     ],
   },
 ]);
