@@ -9,13 +9,13 @@ export default function Header() {
               <Link to='/'>Boulder Log</Link>
             </h1>
             <nav className='ml-auto flex items-center'>
-              <ul className='flex gap-1'>
+              <ul className='flex gap-2'>
                 <a href='' className='hover:link'>
                   <li>View Climbs</li>
                 </a>
-                <a href='' className='hover:link'>
-                  <li>New Climb</li>
-                </a>
+                <Link to='/login' className='hover:link'>
+                  <li>Log In</li>
+                </Link>
               </ul>
             </nav>
           </div>
