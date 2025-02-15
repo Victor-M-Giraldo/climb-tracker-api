@@ -1,6 +1,6 @@
 import { User } from './user';
 
-export type UserContextType = {
-  user: User | null,
-  setUser: (user: User | null) => void,
-};
+export default interface UserContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+}
