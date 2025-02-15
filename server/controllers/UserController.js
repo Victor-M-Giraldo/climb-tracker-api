@@ -77,12 +77,9 @@ const loginUser = asyncHandler(async (req, res) => {
     lastName: user.lastName,
   };
   res.json({
-    message: 'User logged in successfully',
-    data: {
-      token: `Bearer ${token}`,
-      expiresIn,
-      user: existingUser,
-    },
+    token: `Bearer ${token}`,
+    expiresIn,
+    user: existingUser,
   });
 });
 
