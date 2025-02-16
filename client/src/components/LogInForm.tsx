@@ -1,42 +1,23 @@
 import InputField from './InputField';
 import Form from './Form';
 import { useState } from 'react';
-import useUser from '../hooks/useUser';
+import { useLogin } from '../hooks/useLogin';
+
+
 
 export default function LogInForm() {
-  const { setUser } = useUser();
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    try {
-      const response = await fetch('http://localhost:3000/login', {
-        mode: 'cors',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      localStorage.setItem(
-        'token',
-        JSON.stringify({
-          token: data.token,
-          expiresIn: data.expiresIn,
-        })
-      );
-      setUser(data.user);
-    } catch (e) {
-      console.error(e);
-    }
+  const { login, error, loading } = useLogin();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const { email, password } = formData;
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    login(email, password);
   }
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
   return (
     <>
       <h1 className='text-3xl font-bold text-center mb-6'>Log In</h1>
@@ -45,9 +26,10 @@ export default function LogInForm() {
           <InputField
             type='email'
             value={email}
-            setValue={setEmail}
+            setValue={(value) => setFormData({ ...formData, email: value })}
             label='Email'
             placeholder='Enter your email'
+            error={error?.email}
           />
         </div>
 
@@ -55,15 +37,16 @@ export default function LogInForm() {
           <InputField
             type='password'
             value={password}
-            setValue={setPassword}
+            setValue={(value) => setFormData({ ...formData, password: value })}
             label='Password'
             placeholder='Enter your password'
+            error={error?.password}
           />
         </div>
 
         <div>
-          <button type='submit' className='btn btn-primary w-full'>
-            Log In
+          <button type='submit' className='btn btn-primary w-full' disabled={loading}>
+            {loading ? 'Logging in...' : 'Log In'}
           </button>
         </div>
       </Form>

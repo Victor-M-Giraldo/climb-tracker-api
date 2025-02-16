@@ -5,6 +5,7 @@ interface InputFieldProps {
   placeholder: string;
   label: string;
   required?: boolean;
+  error: string | null;
 }
 
 export default function InputField({
@@ -14,6 +15,7 @@ export default function InputField({
   placeholder,
   label,
   required,
+  error,
 }: InputFieldProps) {
   return (
     <label htmlFor={label}>
@@ -27,6 +29,9 @@ export default function InputField({
         onChange={(e) => setValue(e.target.value)}
         className='input w-full mt-1'
       />
+      <p className={`text-sm text-red-400 h-4 mt-1 ${error ? 'visible' : 'invisible'}`}>
+        {error}
+      </p>
     </label>
   );
 }
