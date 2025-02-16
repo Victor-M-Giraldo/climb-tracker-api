@@ -5,7 +5,7 @@ interface FormProps {
 
 export default function Form({ children, onSubmit }: FormProps) {
     return (
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-4">
             {children}
         </form>
     );
