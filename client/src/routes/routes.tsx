@@ -1,10 +1,10 @@
 
-import Layout from "./Layout";
-import HomePage from "./HomePage";
-import RegistrationPage from "./RegistrationPage";
-import ViewClimbsPage from "./Climbs";
-import LoginPage from "./LoginPage";
-import ErrorPage from "./ErrorPage";
+import Layout from "../components/Layout";
+import HomePage from "../pages/HomePage";
+import RegistrationPage from "../pages/RegistrationPage";
+import ViewClimbsPage from "../pages/Climbs";
+import LoginPage from "../pages/LoginPage"
+import ErrorPage from "../pages/ErrorPage";
 import { createBrowserRouter } from 'react-router';
 
 const router = createBrowserRouter([
