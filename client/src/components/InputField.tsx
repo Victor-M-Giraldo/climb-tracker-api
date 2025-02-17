@@ -1,21 +1,23 @@
 interface InputFieldProps {
   value: string;
-  setValue: (value: string) => void;
   type: string;
   placeholder: string;
   label: string;
   required?: boolean;
   error: string | null;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 export default function InputField({
   value,
-  setValue,
   type,
   placeholder,
   label,
   required,
   error,
+  onBlur,
+  onChange,
 }: InputFieldProps) {
   return (
     <label htmlFor={label}>
@@ -26,12 +28,13 @@ export default function InputField({
         placeholder={placeholder}
         value={value}
         required={required}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={onChange}
+        onBlur={onBlur}
         className='input w-full mt-1'
       />
-      <p className={`text-sm text-red-400 h-4 mt-1 ${error ? 'visible' : 'invisible'}`}>
-        {error}
-      </p>
+      {error && (
+        <p className='text-sm text-red-400 h-4 mt-1'>{error}</p>
+      )}
     </label>
   );
 }
