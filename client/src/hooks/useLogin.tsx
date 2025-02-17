@@ -9,6 +9,9 @@ export function useLogin() {
   const [loading, setLoading] = useState(false);
 
   async function login(email: string, password: string): Promise<void> {
+    setLoading(true);
+    setError({});
+
     try {
       const response = await fetch('http://localhost:3000/login', {
         mode: 'cors',
@@ -26,12 +29,15 @@ export function useLogin() {
 
       if (response.status === 400) {
         const { errors } = data as LoginErrorResponse;
+        const serverErrors: Record<string, string> = {};
         errors.forEach((error: ValidationError) => {
-          setError((prev) => ({
-            ...prev,
-            [error.path]: error.msg,
-          }));
+          serverErrors[error.path] = error.msg;
         });
+        setError(serverErrors);
+        return;
+      } else if (response.status === 401) {
+        setError({ general: 'Invalid email or password' });
+        return;
       }
 
       const { token, expiresIn, user } = data as LoginResponse;
@@ -49,5 +55,6 @@ export function useLogin() {
       setLoading(false);
     }
   }
+
   return { login, error, loading };
 }
