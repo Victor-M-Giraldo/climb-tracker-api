@@ -3,6 +3,7 @@ import Form from './Form';
 import { useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import { handleChange } from '../utils/formHandlers';
+import { validateEmail, validatePassword } from '../utils/validations';
 
 export default function LogInForm() {
   const { login, error: serverError, loading } = useLogin();
@@ -35,28 +36,6 @@ export default function LogInForm() {
     }
 
     login(email, password);
-  }
-
-  function validateEmail(email: string) {
-    email = email.trim();
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let error = '';
-    if (!email) {
-      error = 'Email is required';
-    } else if (!re.test(email)) {
-      error = 'Email is invalid';
-    }
-    return { email: error };
-  }
-
-  function validatePassword(password: string) {
-    let error = '';
-    if (!password) {
-      error = 'Password is required';
-    } else if (password.length < 6) {
-      error = 'Password must be at least 6 characters';
-    }
-    return { password: error };
   }
 
   return (
@@ -114,7 +93,7 @@ export default function LogInForm() {
       <div className='mt-6 text-center'>
         <p className='text-sm'>
           Don't have an account?{' '}
-          <a href='/register' className='text-blue-500 hover:text-blue-600'>
+          <a href='/register' className='link text-blue-500 hover:text-blue-600'>
             Sign up here
           </a>
         </p>

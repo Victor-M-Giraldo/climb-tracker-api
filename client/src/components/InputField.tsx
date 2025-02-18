@@ -35,9 +35,8 @@ export default function InputField({
         onBlur={onBlur}
         className='input w-full mt-1'
       />
-      {error && (
-        <p className='text-sm text-red-400 h-4 mt-1'>{error}</p>
-      )}
+
+      <p className='text-sm text-red-400 h-4 mt-1'>{error}</p>
     </label>
   );
 }
