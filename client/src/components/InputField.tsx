@@ -1,6 +1,6 @@
 interface InputFieldProps {
   value: string;
-  type: string;
+  type: 'email' | 'password' | 'text';
   placeholder: string;
   label: string;
   required?: boolean;
