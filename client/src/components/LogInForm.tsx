@@ -2,6 +2,7 @@ import InputField from './InputField';
 import Form from './Form';
 import { useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
+import { handleChange } from '../utils/formHandlers';
 
 export default function LogInForm() {
   const { login, error: serverError, loading } = useLogin();
@@ -66,9 +67,8 @@ export default function LogInForm() {
           <InputField
             type='email'
             value={email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
+            name='email'
+            onChange={(e) => handleChange(e, setFormData, formData)}
             label='Email'
             placeholder='Enter your email'
             error={validationErrors.email || serverError?.email}
@@ -85,9 +85,8 @@ export default function LogInForm() {
           <InputField
             type='password'
             value={password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
+            name='password'
+            onChange={(e) => handleChange(e, setFormData, formData)}
             label='Password'
             placeholder='Enter your password'
             error={validationErrors.password || serverError?.password}
