@@ -1,11 +1,13 @@
 import { body } from 'express-validator';
 
-const validateName = (name) =>
+const validateName = (name, type) =>
   body(name)
     .isString()
     .trim()
+    .notEmpty()
+    .withMessage(`${type} is required`)
     .isLength({ min: 2, max: 50 })
-    .withMessage(`${name} must be beteen 2 and 50 characters`);
+    .withMessage(`${type} must be between 2 and 50 characters`);
 
 const validateEmail = () =>
   body('email')
@@ -36,8 +38,8 @@ const validatePassword = () =>
     );
 
 const registrationValidations = [
-  validateName('firstName'),
-  validateName('lastName'),
+  validateName('firstName', 'First name'),
+  validateName('lastName', 'Last name'),
   validateEmail(),
   validatePassword(),
 ];
