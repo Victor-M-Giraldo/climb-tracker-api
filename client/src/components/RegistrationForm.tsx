@@ -2,36 +2,27 @@ import InputField from './InputField';
 import Form from './Form';
 import { useState } from 'react';
 import { handleChange } from '../utils/formHandlers';
-import { validateEmail, validatePassword, validateConfirmPassword } from '../utils/validations';
+import { useRegister } from '../hooks/useRegister';
+import { useNavigate } from 'react-router';
 
 export default function RegistrationForm() {
+  const { register, error: serverError, loading } = useRegister();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
 
-  const { email, password, confirmPassword } = formData;
+  const { email, password, confirmPassword, firstName, lastName } = formData;
 
-  const [validationErrors, setValidationErrors] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
-
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const emailValidation = validateEmail(email);
-    const passwordValidation = validatePassword(password);
-    const confirmPasswordValidation = validateConfirmPassword(password, confirmPassword);
-    if (emailValidation.email || passwordValidation.password || confirmPasswordValidation.confirmPassword) {
-      setValidationErrors({
-        ...emailValidation,
-        ...passwordValidation,
-        ...confirmPasswordValidation,
-      });
-      return;
+    const success = await register(formData);
+    if (success) {
+      navigate('/');
     }
   }
   return (
@@ -41,19 +32,35 @@ export default function RegistrationForm() {
         <Form onSubmit={handleSubmit}>
           <div>
             <InputField
+              type='text'
+              placeholder='Enter your first name'
+              label='First Name'
+              value={firstName}
+              name='firstName'
+              onChange={(e) => handleChange(e, setFormData, formData)}
+              error={serverError.firstName}
+            />
+          </div>
+          <div>
+            <InputField
+              type='text'
+              placeholder='Enter your last name'
+              label='Last Name'
+              value={lastName}
+              name='lastName'
+              onChange={(e) => handleChange(e, setFormData, formData)}
+              error={serverError.lastName}
+            />
+          </div>
+          <div>
+            <InputField
               type='email'
               placeholder='Enter your email'
               label='Email'
               value={email}
               name='email'
               onChange={(e) => handleChange(e, setFormData, formData)}
-              onBlur={(e) => {
-                setValidationErrors({
-                  ...validationErrors,
-                  ...validateEmail(e.target.value),
-                });
-              }}
-              error={validationErrors.email}
+              error={serverError.email}
             />
           </div>
           <div>
@@ -64,13 +71,7 @@ export default function RegistrationForm() {
               value={password}
               name='password'
               onChange={(e) => handleChange(e, setFormData, formData)}
-              onBlur={(e) => {
-                setValidationErrors({
-                  ...validationErrors,
-                  ...validatePassword(e.target.value),
-                });
-              }}
-              error={validationErrors.password}
+              error={serverError.password}
             />
           </div>
           <div>
@@ -81,24 +82,20 @@ export default function RegistrationForm() {
               value={confirmPassword}
               name='confirmPassword'
               onChange={(e) => handleChange(e, setFormData, formData)}
-              error={validationErrors.confirmPassword}
-              onBlur={(e) => {
-                setValidationErrors({
-                  ...validationErrors,
-                  ...validateConfirmPassword(password, e.target.value),
-                });
-              }}
+              error={serverError.confirmPassword}
             />
           </div>
           <div>
-            <button type='submit' className='w-full btn btn-primary'>
-              Sign Up
+            <button type='submit' className='w-full btn btn-primary' disabled={loading}>
+              {loading ? 'Signing Up...' : 'Sign Up'}
             </button>
           </div>
           <div className='mt-6 text-center'>
             <p className='text-sm'>
               Already have an account?{' '}
-              <a href='/login' className='link text-blue-500 hover:text-blue-600'>
+              <a
+                href='/login'
+                className='link text-blue-500 hover:text-blue-600'>
                 Log in here
               </a>
             </p>
