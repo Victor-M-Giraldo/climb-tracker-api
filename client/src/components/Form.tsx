@@ -1,13 +1,18 @@
+import { ElementType } from 'react';
+
 interface FormProps {
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    children: React.ReactNode;
+  FormHeader: ElementType;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  children: React.ReactNode;
 }
 
-export default function Form({ children, onSubmit }: FormProps) {
-    return (
-        <form onSubmit={onSubmit} className="space-y-4">
-            {children}
-        </form>
-    );
-
+export default function Form({ children, FormHeader, onSubmit }: FormProps) {
+  return (
+    <>
+    <FormHeader/>
+    <form onSubmit={onSubmit} className='space-y-4'>
+      {children}
+    </form>
+    </>
+  );
 }
