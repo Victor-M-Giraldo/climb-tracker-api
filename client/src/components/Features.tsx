@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import FeatureCard from "./FeatureCard";
 
 const features = [
