@@ -1,42 +1,34 @@
+import { ElementType } from "react";
+
 interface InputFieldProps {
-  value: string;
   type: 'email' | 'password' | 'text';
-  placeholder: string;
-  label: string;
-  required?: boolean;
-  error: string | null;
   name: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  label: string;
+  placeholder: string;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  error: string | null;
+  Wrapper?: ElementType
 }
 
 export default function InputField({
-  value,
-  type,
-  placeholder,
   label,
-  required,
   error,
-  onBlur,
-  name,
-  onChange,
+  Wrapper,
+  ...props
 }: InputFieldProps) {
-  return (
+
+  const Content = (
     <label htmlFor={label}>
       {label}
       <input
-        type={type}
-        id={label}
-        placeholder={placeholder}
-        value={value}
-        name={name}
-        required={required}
-        onChange={onChange}
-        onBlur={onBlur}
+        {...props}
         className='input w-full mt-1'
       />
 
-      <p className='text-sm text-red-400 h-4 mt-1'>{error}</p>
+      <p className='text-sm text-red-400 mt-1'>{error}</p>
     </label>
-  );
+  )
+  return Wrapper ? <Wrapper>{Content}</Wrapper> : Content;
 }
