@@ -3,6 +3,6 @@ export interface ValidationError {
     msg: string;
 }
 
-export interface LoginErrorResponse {
+export interface ValidationErrorResponse {
     errors: ValidationError[];
 }

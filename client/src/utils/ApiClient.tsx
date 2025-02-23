@@ -4,7 +4,7 @@ interface ApiClientOptions extends RequestInit {
   headers?: HeadersInit;
 }
 
-export async function ApiClient(endpoint: string, options: ApiClientOptions, body) {
+export async function ApiClient(endpoint: string, options: ApiClientOptions, body: Record<string, string>) {
   const config: RequestInit = {
     method: 'GET',
     ...options,
