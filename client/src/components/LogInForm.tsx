@@ -3,6 +3,7 @@ import Form from './Form';
 import Button from './Button';
 import GeneralError from './GeneralError';
 import AuthFooter from './AuthFooter';
+import { serializeFormData } from '../utils/formUtils';
 import { useLogin } from '../hooks/useLogin';
 import { useNavigate } from 'react-router';
 
@@ -12,9 +13,9 @@ export default function LogInForm() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
-    const { email, password } = data;
-    login(email as string, password as string);
+    const formData = new FormData(e.currentTarget);
+    const data = serializeFormData(formData);
+    login(data);
     if (Object.keys(errors).length === 0) {
       navigate('/');
     }

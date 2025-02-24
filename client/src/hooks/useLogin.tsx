@@ -9,9 +9,10 @@ export function useLogin() {
   const [loading, setLoading] = useState(false);
   const userService = new UserService();
 
-  async function login(email: string, password: string): Promise<void> {
+  async function login(formData: Record<string, string>): Promise<void> {
     setLoading(true);
     setErrors({});
+    const { email, password } = formData;
 
     try {
       const { token, expiresIn, user } = await userService.authenticate(

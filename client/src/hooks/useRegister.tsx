@@ -4,12 +4,12 @@ import { ValidationError } from '../types/errors';
 
 export function useRegister() {
   const { setUser } = useUser();
-  const [error, setError] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
   async function register(formData: Record<string, string>) {
     setLoading(true);
-    setError({});
+    setErrors({});
     const { firstName, lastName, email, password, confirmPassword } = formData;
 
     try {
@@ -49,11 +49,11 @@ export function useRegister() {
             errors.forEach((error: ValidationError) => {
                 serverErrors[error.path] = error.msg;
             });
-            setError(serverErrors);
+            setErrors(serverErrors);
             break;
         }
         case 409: {
-            setError({ general: 'Email already in use' });
+            setErrors({ general: 'Email already in use' });
             break;
         } default: {
             throw new Error('Something unexpected went wrong');
@@ -66,5 +66,5 @@ export function useRegister() {
         setLoading(false);
     }
   }
-  return { register, error, loading };
+  return { register, errors, loading };
 }

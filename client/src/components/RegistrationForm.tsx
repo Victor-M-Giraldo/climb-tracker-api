@@ -1,105 +1,74 @@
 import InputField from './InputField';
 import Form from './Form';
-import { useState } from 'react';
-import { handleChange } from '../utils/formHandlers';
+import Button from './Button';
+import AuthFooter from './AuthFooter';
+import { serializeFormData } from '../utils/formUtils';
 import { useRegister } from '../hooks/useRegister';
-import { useNavigate } from 'react-router';
 
 export default function RegistrationForm() {
-  const { register, error: serverError, loading } = useRegister();
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  const { email, password, confirmPassword, firstName, lastName } = formData;
+  const { register, errors, loading } = useRegister();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const success = await register(formData);
-    if (success) {
-      navigate('/');
-    }
+    const formData = new FormData(e.currentTarget);
+    const data = serializeFormData(formData);
+    register(data);
   }
   return (
     <>
       <div className='w-full p-8'>
-        <h1 className='text-2xl font-bold mb-6'>Create Your Account</h1>
-        <Form onSubmit={handleSubmit}>
-          <div>
+        <Form onSubmit={handleSubmit} FormHeader={() => (
+          <h1 className='text-2xl font-bold mb-6'>Create Your Account</h1>
+        )}>
             <InputField
               type='text'
+              name='firstName'
               placeholder='Enter your first name'
               label='First Name'
-              value={firstName}
-              name='firstName'
-              onChange={(e) => handleChange(e, setFormData, formData)}
-              error={serverError.firstName}
+              error={errors.firstName}
+              required={true}
+              Wrapper='div'
             />
-          </div>
-          <div>
             <InputField
               type='text'
+              name='lastName'
               placeholder='Enter your last name'
               label='Last Name'
-              value={lastName}
-              name='lastName'
-              onChange={(e) => handleChange(e, setFormData, formData)}
-              error={serverError.lastName}
+              error={errors.lastName}
+              required={true}
+              Wrapper='div'
             />
-          </div>
-          <div>
             <InputField
               type='email'
+              name='email'
               placeholder='Enter your email'
               label='Email'
-              value={email}
-              name='email'
-              onChange={(e) => handleChange(e, setFormData, formData)}
-              error={serverError.email}
+              error={errors.email}
+              required={true}
+              Wrapper='div'
             />
-          </div>
-          <div>
             <InputField
               type='password'
+              name='password'
               placeholder='Enter your password'
               label='Password'
-              value={password}
-              name='password'
-              onChange={(e) => handleChange(e, setFormData, formData)}
-              error={serverError.password}
+              error={errors.password}
+              required={true}
+              Wrapper='div'
             />
-          </div>
-          <div>
             <InputField
               type='password'
+              name='confirmPassword'
               placeholder='Confirm your password'
               label='Confirm Password'
-              value={confirmPassword}
-              name='confirmPassword'
-              onChange={(e) => handleChange(e, setFormData, formData)}
-              error={serverError.confirmPassword}
+              error={errors.confirmPassword}
+              required={true}
+              Wrapper='div'
             />
-          </div>
-          <div>
-            <button type='submit' className='w-full btn btn-primary' disabled={loading}>
+            <Button type='submit' disabled={loading} Wrapper='div'>
               {loading ? 'Signing Up...' : 'Sign Up'}
-            </button>
-          </div>
-          <div className='mt-6 text-center'>
-            <p className='text-sm'>
-              Already have an account?{' '}
-              <a
-                href='/login'
-                className='link text-blue-500 hover:text-blue-600'>
-                Log in here
-              </a>
-            </p>
-          </div>
+            </Button>
+            <AuthFooter promptText="Already have an account? " link='/login' linkText='Log in here'/>
         </Form>
       </div>
     </>
